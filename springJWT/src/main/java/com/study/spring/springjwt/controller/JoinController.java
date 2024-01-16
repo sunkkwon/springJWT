@@ -4,8 +4,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.study.spring.springjwt.dto.joinDTO;
-import com.study.spring.springjwt.dto.service.JoinService;
+import com.study.spring.springjwt.dto.JoinDTO;
+import com.study.spring.springjwt.service.JoinService;
 
 @Controller
 @ResponseBody
@@ -17,9 +17,9 @@ public class JoinController {
 	}
 	
 	@PostMapping("/join")
-	public String joinP(joinDTO dto) {
+	public String joinP(JoinDTO joinDTO) {
 		
-		joinService.joinS(dto);
+		joinService.joinS(joinDTO);
 		return "ok";
 	}
 }
