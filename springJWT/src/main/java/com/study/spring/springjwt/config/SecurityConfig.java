@@ -1,9 +1,10 @@
 package com.study.spring.springjwt.config;
 
+import java.util.Arrays;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -11,7 +12,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import com.study.spring.springjwt.jwt.JWTFilter;
 import com.study.spring.springjwt.jwt.JWTUtil;
 import com.study.spring.springjwt.jwt.LoginFilter;
 
@@ -44,6 +49,9 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
+    	//cors custom setting
+    	http.cors((cors) -> cors.configurationSource(corsConfigurationSource()));
+    	
 		//csrf disable
         http.csrf((auth) -> auth.disable());
 
@@ -59,6 +67,9 @@ public class SecurityConfig {
 			.requestMatchers("/admin").hasRole("ADMIN")		// admin role 이 있는 겨웅만 대상
             .anyRequest().authenticated());		// 이외의 경우는 로그인 인증필요
 
+        //JWTFilter 등록
+        http.addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
+        
         //필터 추가 LoginFilter()는 인자를 받음 (AuthenticationManager() 메소드에 authenticationConfiguration 객체를 넣어야 함) 따라서 등록 필요
         http.addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
 		//세션 설정
@@ -67,5 +78,18 @@ public class SecurityConfig {
             .sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
         return http.build();
+    }
+    
+    public CorsConfigurationSource corsConfigurationSource() {
+    	CorsConfiguration configuration = new CorsConfiguration();
+    	
+    	configuration.setAllowedOrigins(Arrays.asList("http://api.example.com"));
+    	configuration.setAllowedMethods(Arrays.asList("GET","POST"));
+    	configuration.addExposedHeader("Authentication");
+    	
+    	UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    	source.registerCorsConfiguration("/**", configuration);
+    	
+    	return source;
     }
 }

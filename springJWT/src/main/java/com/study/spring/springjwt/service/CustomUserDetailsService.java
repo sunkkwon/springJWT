@@ -10,11 +10,11 @@ import com.study.spring.springjwt.entity.UserEntity;
 import com.study.spring.springjwt.repository.UserRepository;
 
 @Service
-public class CustomUserDetailService implements UserDetailsService {
+public class CustomUserDetailsService implements UserDetailsService {
 
 	private final UserRepository userRepository;
 
-	public CustomUserDetailService(UserRepository userRepository) {
+	public CustomUserDetailsService(UserRepository userRepository) {
 		this.userRepository = userRepository;
 	}
 

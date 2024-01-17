@@ -19,6 +19,7 @@ public class JoinController {
 	@PostMapping("/join")
 	public String joinP(JoinDTO joinDTO) {
 		
+//		System.out.println("controller joinDTO: "+joinDTO.getUsername());
 		joinService.joinS(joinDTO);
 		return "ok";
 	}

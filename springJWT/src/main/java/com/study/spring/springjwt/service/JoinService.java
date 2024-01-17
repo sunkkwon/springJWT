@@ -14,7 +14,7 @@ public class JoinService {
 	private final UserRepository userRepository;
 	private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-		public JoinService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
+	public JoinService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
 		this.userRepository = userRepository;
 		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
 	}
@@ -25,13 +25,18 @@ public class JoinService {
 //		String role = dto.getRole();
 	
 		Boolean isExists = userRepository.existsByUsername(username);
-		
+//		System.out.println("username: " + username + ", password: " + password);
+//		System.out.println(isExists);
 		if(isExists) {
+			System.out.println("user:"+username+" is exists");
 			return ;
 		}
+		
+//		System.out.println("here");
 		UserEntity data = new UserEntity();
 		
 		data.setUsername(username);
+//		data.setPassword(password);
 		data.setPassword(bCryptPasswordEncoder.encode(password));
 		data.setRole("ROLE_ADMIN");
 		
